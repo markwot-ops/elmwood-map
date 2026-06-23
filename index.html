@@ -189,9 +189,143 @@ body { font-family:Georgia,serif; background:#1a1a1a; color:#f0e8d8; height:100v
 </div>
 
 <script>
-const veterans = [];
+const veterans = [
+  {
+    "id": "aaron_f_baldwin_cw",
+    "name": "Aaron F. Baldwin",
+    "branch": "Army",
+    "era": "Civil War",
+    "lat": 42.187094,
+    "lng": -72.629106,
+    "photo": "Baldwin.jpg",
+    "bio": "Aaron F. Baldwin served as a soldier in the Union Army during the Civil War, assigned to Company F of the 27th Massachusetts Volunteer Infantry. The 27th Massachusetts saw action across multiple theaters of the war, including service in North Carolina and Virginia. Baldwin returned to Holyoke, where he is buried alongside his family at Elmwood Cemetery. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "carlton_r_baush_wwi",
+    "name": "Carlton R. Baush",
+    "branch": "Army",
+    "era": "World War I",
+    "lat": 42.187072,
+    "lng": -72.629203,
+    "photo": "C_Baush.jpg",
+    "bio": "Carlton R. Baush served as a Sergeant in Company C of the 321st Machine Gun Battalion during World War I. Machine gun battalions were the backbone of defensive infantry tactics on the Western Front, delivering sustained fire that shaped the course of trench warfare. Baush was born February 20, 1896 and died May 30, 1965. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "lo_carpenter_cw",
+    "name": "L.O. Carpenter",
+    "branch": "Army",
+    "era": "Civil War",
+    "lat": 42.187439,
+    "lng": -72.629928,
+    "photo": "Carpenter_.jpg",
+    "bio": "L.O. Carpenter served as a First Lieutenant and Assistant Surgeon with the 57th Massachusetts Volunteer Infantry during the Civil War. Military surgeons operated under fire, performing amputations and field medicine that saved countless lives under conditions of extreme hardship. The 57th Massachusetts was organized in 1864 and saw heavy combat in the Overland Campaign under General Grant. A Grand Army of the Republic marker stands at his grave, recognizing his Union service. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "patrick_j_curran_wwi",
+    "name": "Patrick J. Curran",
+    "branch": "Army",
+    "era": "World War I",
+    "lat": 42.186917,
+    "lng": -72.629203,
+    "photo": "Curren.jpg",
+    "bio": "Patrick J. Curran served as a Sergeant in Company C of the 336th Battalion, Tank Corps, during World War I. The Tank Corps was a new and experimental branch of the American Expeditionary Forces, deploying the first generation of armored warfare on the Western Front. Curran was born March 12, 1892 and died December 5, 1965. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "edward_day_rev",
+    "name": "Edward Day",
+    "branch": "Army",
+    "era": "Revolutionary War",
+    "lat": 42.187144,
+    "lng": -72.629197,
+    "photo": "day1.jpg",
+    "bio": "Edward Day died in his country's service on October 25, 1777, at the age of 19 \u2014 one of five sons of Joel and Eunice Day of Holyoke who gave their service to the cause of American independence. His death at Troy, New York, during the Revolutionary War is recorded on the family stone at Elmwood Cemetery, one of the oldest and most historically significant markers in Holyoke. A DAR tablet erected in 1925 honors Eunice Day for sending her husband and five sons to the cause of liberty. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "robert_day_rev",
+    "name": "Robert Day",
+    "branch": "Army",
+    "era": "Revolutionary War",
+    "lat": 42.187164,
+    "lng": -72.629197,
+    "photo": "day1.jpg",
+    "bio": "Robert Day died on August 27, 1777, aged 13 years, while bringing supplies to American forces at Ticonderoga, New York \u2014 ambushed and killed in service to his country during the Revolutionary War. He is commemorated on the Joel Day family stone at Elmwood Cemetery alongside his brother Edward, who also died in 1777. Their mother Eunice Day is honored by a DAR tablet for giving her husband and five sons to the American Revolution. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "william_r_dempsey_wwii",
+    "name": "William R. Dempsey",
+    "branch": "Navy",
+    "era": "World War II",
+    "lat": 42.187283,
+    "lng": -72.628631,
+    "photo": "dempsey.jpg",
+    "bio": "William R. Dempsey served as a Pharmacist's Mate First Class in the United States Navy during World War II. Navy pharmacist's mates served as frontline medical corpsmen, providing emergency medical care aboard ships and with Marine units under combat conditions. Dempsey was born August 2, 1925 and died November 23, 1998. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "hugo_dudman_wwi_wwii",
+    "name": "Hugo Dudman",
+    "branch": "Navy",
+    "era": "World War II",
+    "lat": 42.187114,
+    "lng": -72.629281,
+    "photo": "dudman.jpg",
+    "bio": "Hugo Dudman served as a Signalman Second Class in the United States Navy through both World War I and World War II \u2014 a rare distinction that spans more than two decades of naval service. Signalmen were responsible for visual communications between vessels, a critical role before the era of reliable radio. Dudman was born July 28, 1897 and died April 28, 1946, shortly after the close of World War II. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "elisha_chapin_colonial",
+    "name": "Elisha Chapin",
+    "branch": "Army",
+    "era": "Colonial War",
+    "lat": 42.187378,
+    "lng": -72.629561,
+    "photo": "E_Chapin.jpg",
+    "bio": "Captain Elisha Chapin was killed by Native forces at Williamstown in Berkshire County on July 17, 1756, aged 49 years \u2014 during the French and Indian War, the North American theater of the global Seven Years' War. His death in the western Massachusetts frontier placed him among the earliest documented military casualties connected to what would become the City of Holyoke. The marker at Elmwood Cemetery is among the oldest military gravestones in the region. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "jno_eveleth_cw",
+    "name": "John Eveleth",
+    "branch": "Army",
+    "era": "Civil War",
+    "lat": 42.186958,
+    "lng": -72.629272,
+    "photo": "eveleth.jpg",
+    "bio": "John Eveleth \u2014 listed on his marker as Jno. Eveleth \u2014 served with the 15th Massachusetts Battery during the Civil War. The 15th Massachusetts Battery was a light artillery unit that served in the Eastern Theater, providing cannon support in engagements across Virginia and Maryland. Artillery units like the 15th were essential to Union battlefield tactics, delivering fire that could determine the outcome of an engagement. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "arthur_emil_ezold_wwii",
+    "name": "Arthur Emil Ezold",
+    "branch": "Army",
+    "era": "World War II",
+    "lat": 42.186986,
+    "lng": -72.629242,
+    "photo": "ezold.jpg",
+    "bio": "Arthur Emil Ezold served as a Sergeant in the 1460th Service Command Unit of the United States Army during World War II. Service command units were the logistical backbone of the American war effort, managing the supply chains, depots, and transport networks that kept combat forces equipped and operational across multiple theaters. Ezold was born June 15, 1906 and died September 27, 1967. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "fred_k_burnham_cw",
+    "name": "Frederick K. Burnham",
+    "branch": "Army",
+    "era": "Civil War",
+    "lat": 42.187283,
+    "lng": -72.629058,
+    "photo": "F_Burnham.jpg",
+    "bio": "Frederick K. Burnham \u2014 recorded on his marker as Fred'k Burnham \u2014 served in Company I of the 10th Massachusetts Volunteer Infantry during the Civil War. The 10th Massachusetts saw action in some of the war's most consequential engagements, including the Peninsular Campaign, Antietam, and the Overland Campaign. A GAR marker stands at his grave, placed by the Grand Army of the Republic in recognition of his Union service. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  },
+  {
+    "id": "david_w_mulligan_unk",
+    "name": "David W. Mulligan",
+    "branch": "Unknown",
+    "era": "Unknown Era",
+    "lat": 42.187531,
+    "lng": -72.628983,
+    "photo": "1782251065953_D_Mulligan.jpg",
+    "bio": "David W. Mulligan was born in 1918 and died in 1965. An American flag marks his grave at Elmwood Cemetery, indicating veteran status. Branch of service and era of service have not yet been confirmed from available records. For information about veterans buried at Elmwood Cemetery, contact the City of Holyoke Veterans Graves Officer, Mark Wotton, at mwotton@holyoke.org."
+  }
+];
 
 const ERA_COLORS = {
+  'Colonial War':'#6B2D8B',
+  'Revolutionary War':'#1B4F8A',
+  'Civil War':'#8B4513',
   'Civil War Era':'#8B4513',
   'Spanish-American War':'#CD853F',
   'World War I':'#4682B4',
@@ -200,7 +334,7 @@ const ERA_COLORS = {
   'Vietnam':'#DC143C',
   'Unknown Era':'#666',
 };
-const ERA_ORDER = ['Civil War Era','Spanish-American War','World War I','World War II','Korean War','Vietnam','Unknown Era'];
+const ERA_ORDER = ['Colonial War','Revolutionary War','Civil War','Civil War Era','Spanish-American War','World War I','World War II','Korean War','Vietnam','Unknown Era'];
 
 function normEra(raw) {
   if (!raw) return 'Unknown Era';
