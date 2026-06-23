@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elmwood Cemetery Veterans Memorial — Holyoke, MA</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#1a1a1a; color:#f0e8d8; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+#header {
+  background:#0d0d0d; border-bottom:2px solid #6b3a1f;
+  padding:10px 18px; display:flex; align-items:center;
+  justify-content:space-between; flex-shrink:0; z-index:1000;
+}
+#header h1 { font-size:1.05rem; font-weight:normal; letter-spacing:0.08em; text-transform:uppercase; }
+#header .sub { font-size:0.72rem; color:#888; margin-top:2px; }
+#vet-count { font-size:0.85rem; color:#CD853F; letter-spacing:0.04em; }
+
+#main { position:relative; flex:1; overflow:hidden; }
+#map { position:absolute; inset:0; z-index:1; }
+
+/* ERA LEGEND — bottom left */
+#legend {
+  position:absolute; bottom:14px; left:8px;
+  background:rgba(8,8,8,0.9); border:1px solid #3a3a3a;
+  border-radius:4px; padding:8px 10px; z-index:800; min-width:124px;
+}
+#legend h4 { font-size:0.52rem; text-transform:uppercase; letter-spacing:0.12em; color:#888; margin-bottom:6px; }
+.leg-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; cursor:pointer; transition:opacity 0.15s; }
+.leg-row:hover { opacity:0.75; }
+.leg-sym { width:13px; text-align:center; font-size:0.66rem; }
+.leg-label { font-size:0.58rem; color:#ccc; flex:1; }
+.leg-count { font-size:0.54rem; color:#ccc; }
+.leg-row.dimmed { opacity:0.28; }
+
+/* SIDEBAR — right */
+#sidebar {
+  position:absolute; top:0; right:0; bottom:0; width:265px;
+  background:rgba(10,10,10,0.93); border-left:1px solid #2a2a2a;
+  display:flex; flex-direction:column; z-index:800; overflow:hidden;
+}
+#sidebar-top { padding:10px 11px 8px; border-bottom:1px solid #222; background:#0a0a0a; }
+#search {
+  width:100%; background:#1a1a1a; border:1px solid #3a3a3a; color:#f0e8d8;
+  padding:6px 9px; font-family:Georgia,serif; font-size:0.8rem;
+  border-radius:3px; margin-bottom:7px; outline:none;
+}
+#search:focus { border-color:#CD853F; }
+#search::placeholder { color:#555; }
+#era-filters { display:flex; flex-wrap:wrap; gap:3px; }
+.era-btn {
+  padding:2px 6px; border-radius:2px; border:2px solid transparent;
+  font-size:0.5rem; cursor:pointer; font-family:Georgia,serif;
+  color:white; text-shadow:0 1px 2px rgba(0,0,0,0.6);
+  transition:opacity 0.2s, border-color 0.15s;
+  opacity:0.8;
+}
+.era-btn.off { opacity:0.8; border-color:transparent; }
+.era-btn.on { border-color:rgba(255,255,255,0.6); opacity:0.6; }
+.era-btn.selected { opacity:1; border-color:rgba(255,255,255,0.9); filter:brightness(1.3); }
+
+#vet-list { overflow-y:auto; flex:1; padding:3px 0; }
+#vet-list::-webkit-scrollbar { width:4px; }
+#vet-list::-webkit-scrollbar-thumb { background:#333; border-radius:3px; }
+.vet-item {
+  padding:6px 11px; cursor:pointer; border-bottom:1px solid #181818;
+  display:flex; align-items:center; gap:7px; transition:background 0.1s;
+}
+.vet-item:hover { background:#1c1c1c; }
+.vet-item.active { background:#000000; border-left:3px solid #CD853F; padding-left:8px; }
+.vet-item.active .v-name { color:#ffffff; text-shadow:0 0 4px rgba(255,255,255,0.9), 0 0 10px rgba(255,255,255,0.5); }
+.vet-item.active .v-era { color:#ffffff; text-shadow:0 0 4px rgba(255,255,255,0.8), 0 0 8px rgba(255,255,255,0.4); }
+@keyframes symPulse {
+  0%   { text-shadow:0 0 2px rgba(255,255,255,0.3); opacity:0.4; }
+  50%  { text-shadow:0 0 8px rgba(255,255,255,1), 0 0 18px rgba(255,255,255,0.7); opacity:1; }
+  100% { text-shadow:0 0 2px rgba(255,255,255,0.3); opacity:0.4; }
+}
+.vet-item.active .v-sym {
+  animation: symPulse 1.2s ease-in-out infinite;
+  display:inline-block;
+}
+.v-sym { font-size:0.8rem; width:15px; text-align:center; flex-shrink:0; }
+.v-name { font-size:0.78rem; color:#d4c9b8; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.v-era { font-size:0.63rem; color:#777; }
+#no-results { padding:18px; color:#555; font-size:0.8rem; text-align:center; display:none; }
+
+/* POPUP — light overlay */
+#popup {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0); z-index:3000;
+  pointer-events:none;
+}
+#popup.show { display:block; pointer-events:auto; }
+#pbox {
+  position:absolute;
+  top:50%; right:275px;
+  transform:translateY(-50%);
+  background:#141414; border:1px solid #444; border-radius:6px;
+  width:310px; max-height:78vh; overflow-y:scroll; scroll-behavior:smooth;
+  padding:20px; box-shadow:0 8px 40px rgba(0,0,0,0.7);
+  pointer-events:auto;
+}
+#pclose {
+  position:absolute; top:9px; right:12px;
+  background:none; border:none; color:#888; font-size:1.5rem; cursor:pointer;
+}
+#pclose:hover { color:#fff; }
+#pphoto { width:100%; max-height:200px; object-fit:cover; border-radius:4px; margin-bottom:12px; display:none; }
+#pname { font-size:1.05rem; color:#f0e8d8; margin-bottom:3px; }
+#pservice { font-size:0.78rem; color:#CD853F; margin-bottom:9px; letter-spacing:0.04em; }
+#pstory { font-size:0.78rem; color:#aaa; line-height:1.65; }
+#pflags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:9px; }
+.fbadge { padding:3px 8px; border-radius:3px; font-size:0.68rem; font-weight:bold; }
+
+/* Kill default Leaflet popup chrome on coord label */
+.coord-label .leaflet-popup-content-wrapper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+.coord-label .leaflet-popup-tip-container {
+  display: none !important;
+}
+.coord-label .leaflet-popup-content {
+  margin: 0 !important;
+}
+.coord-label {
+  z-index: 1200 !important;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 1px 5px rgba(0,0,0,0.8); transform:scale(1); }
+  50%  { box-shadow: 0 1px 5px rgba(0,0,0,0.8); transform:scale(1.35); }
+  100% { box-shadow: 0 1px 5px rgba(0,0,0,0.8); transform:scale(1); }
+}
+.marker-pulse > div {
+  animation: pulse 1.2s ease-in-out infinite !important;
+  border-color: white !important;
+  border-width: 3px !important;
+  z-index: 9999 !important;
+}
+
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <h1>&#10013; Elmwood Cemetery Veterans Memorial</h1>
+    <div class="sub">Holyoke, Massachusetts &bull; Est. 1882</div>
+  </div>
+  <div id="vet-count"></div>
+</div>
+
+<div id="main">
+  <div id="map"></div>
+
+  <div id="legend">
+    <h4>Era</h4>
+    <div id="leg-rows"></div>
+  </div>
+
+  <div id="sidebar">
+    <div id="sidebar-top">
+      <input type="text" id="search" placeholder="Search veterans... (Enter to jump)">
+      <div id="era-filters"></div>
+    </div>
+    <div id="vet-list"></div>
+    <div id="no-results">No veterans found</div>
+  </div>
+</div>
+
+<div id="popup">
+  <div id="pbox">
+    <button id="pclose" onclick="closePopup()">&#215;</button>
+    <img id="pphoto" src="" alt="">
+    <div id="pextra"></div>
+    <div id="pname"></div>
+    <div id="pservice"></div>
+    <div id="pflags"></div>
+    <div id="pcoords" style="font-size:0.68rem;color:#666;margin-bottom:9px;font-family:monospace;"></div>
+    <div id="pstory"></div>
+  </div>
+</div>
+
+<script>
+const veterans = [];
+
+const ERA_COLORS = {
+  'Civil War Era':'#8B4513',
+  'Spanish-American War':'#CD853F',
+  'World War I':'#4682B4',
+  'World War II':'#2E8B57',
+  'Korean War':'#9370DB',
+  'Vietnam':'#DC143C',
+  'Unknown Era':'#666',
+};
+const ERA_ORDER = ['Civil War Era','Spanish-American War','World War I','World War II','Korean War','Vietnam','Unknown Era'];
+
+function normEra(raw) {
+  if (!raw) return 'Unknown Era';
+  const s = raw.trim();
+  if (s.includes('Civil')) return 'Civil War Era';
+  if (s.includes('Spanish')) return 'Spanish-American War';
+  if (s.includes('Vietnam')) return 'Vietnam';
+  if (s.includes('World War II')) return 'World War II';
+  if (s.includes('World War I')) return 'World War I';
+  if (s.includes('Korean')) return 'Korean War';
+  if (s.includes('Early') || s.includes('Pre-')) return 'World War I';
+  return 'Unknown Era';
+}
+
+function eraColor(raw) { return ERA_COLORS[normEra(raw)] || '#666'; }
+
+function branchSym(branch) {
+  if (!branch) return '✦';
+  const b = branch.toUpperCase();
+  if (b.includes('NAVY')) return '⚓';
+  if (b.includes('MARINE') || b.includes('USMC')) return '🦅';
+  if (b.includes('AIR') || b.includes('USAF')) return '✈';
+  if (b.includes('COAST')) return '⚑';
+  if (b.includes('ARMY')) return '★';
+  return '✦';
+}
+
+// Map
+const map = L.map('map', {preferCanvas:true, minZoom:15, maxZoom:20})
+  .setView([42.18855,-72.62910], 17);
+
+const satellite = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  {attribution:'&copy; Esri', maxNativeZoom:19, maxZoom:20}
+);
+const street = L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+  {attribution:'&copy; CARTO', subdomains:'abcd', maxNativeZoom:19, maxZoom:20}
+);
+const terrain = L.tileLayer(
+  'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+  {attribution:'&copy; OpenTopoMap', subdomains:'abc', maxNativeZoom:17, maxZoom:20}
+);
+
+satellite.addTo(map);
+L.control.layers({'Satellite':satellite,'Street':street,'Terrain':terrain},{},{position:'topleft'}).addTo(map);
+
+// State
+let activeEras = new Set(ERA_ORDER);
+let markerMap = {};
+let activeIdx = null;
+let searchTerm = '';
+
+// Markers
+function buildMarkers() {
+  Object.values(markerMap).forEach(m => map.removeLayer(m));
+  markerMap = {};
+  veterans.forEach((v, idx) => {
+    if (!activeEras.has(normEra(v.era))) return;
+    if (!v.lat || !v.lng) return;
+    const color = eraColor(v.era);
+    const sym = branchSym(v.branch);
+    const icon = L.divIcon({
+      className:'',
+      html:`<div style="width:26px;height:26px;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,0.65);display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 1px 5px rgba(0,0,0,0.8);cursor:pointer;">${sym}</div>`,
+      iconSize:[26,26], iconAnchor:[13,13]
+    });
+    const m = L.marker([v.lat, v.lng], {icon});
+    m.on('click', () => {
+      // Show coordinate tooltip briefly on the marker
+      openPopup(v, idx);
+    });
+    m.addTo(map);
+    markerMap[idx] = m;
+  });
+}
+
+// Popup
+let activeMarker = null;
+let activeLabel = null;
+
+function openPopup(v, idx) {
+  // Remove pulse from previous marker
+  if (activeMarker) {
+    activeMarker.getElement()?.classList.remove('marker-pulse');
+  }
+  document.getElementById('pname').textContent = v.name;
+  document.getElementById('pservice').textContent = [v.branch, v.era].filter(Boolean).join(' • ');
+  document.getElementById('pstory').textContent = v.story || 'Service details being researched.';
+  const photo = document.getElementById('pphoto');
+  if (v.photo) {
+    photo.src = v.photo;
+    photo.style.display = 'block';
+  } else {
+    photo.style.display = 'none';
+  }
+  // Extra photos (newspaper clippings, documents, etc.)
+  let extEl = document.getElementById('pextra');
+  if (!extEl) {
+    extEl = document.createElement('div');
+    extEl.id = 'pextra';
+    extEl.style.cssText = 'margin-bottom:10px;';
+    photo.parentNode.insertBefore(extEl, photo.nextSibling);
+  }
+  extEl.innerHTML = '';
+  if (v.extraPhotos && v.extraPhotos.length) {
+    v.extraPhotos.forEach(ep => {
+      const link = document.createElement('a');
+      link.href = ep.src;
+      link.target = '_blank';
+      link.style.cssText = 'display:block;margin-bottom:10px;color:#c8b97a;font-size:0.82rem;text-decoration:none;border:1px solid #444;border-radius:6px;padding:8px 12px;background:#1a1a1a;';
+      link.textContent = ep.caption || '📄 View document';
+      extEl.appendChild(link);
+    });
+  }
+  const flagsEl = document.getElementById('pflags');
+  flagsEl.innerHTML = '';
+  const fs = {'KIA':['#8B0000','#fff'],'Purple Heart':['#7B2D8B','#fff'],'Bronze Star':['#B8860B','#fff'],'Air Medal':['#1a6abf','#fff'],'Female Veteran':['#C71585','#fff'],'Silver Star':['#71797E','#fff'],'Distinguished Service Cross':['#2c1b4d','#fff'],'Croix de Guerre':['#2d5a3d','#fff']};
+  (v.flags||[]).forEach(f => {
+    const [bg,fg] = fs[f]||['#444','#fff'];
+    const b = document.createElement('span');
+    b.className='fbadge'; b.style.background=bg; b.style.color=fg; b.textContent=f;
+    flagsEl.appendChild(b);
+  });
+  // Remove old label
+  if (activeLabel) { map.removeLayer(activeLabel); activeLabel = null; }
+
+  // Pulse the clicked marker
+  const clickedMarker = markerMap[idx];
+  if (clickedMarker) {
+    clickedMarker.getElement()?.classList.add('marker-pulse');
+    activeMarker = clickedMarker;
+  }
+
+  // Pan so grave appears in left half of screen, popup shows on right
+  // Popup card is 310px wide, sitting at right:275px from edge
+  // Grave should appear at roughly 30% from left edge
+  const mapW = map.getContainer().offsetWidth;
+  const popupLeft = mapW - 275 - 310; // left edge of popup card
+  const graveTargetX = popupLeft * 0.45; // where we want the grave on screen
+  const currentCenter = map.project(map.getCenter(), map.getZoom());
+  const gravePoint = map.project([v.lat, v.lng], map.getZoom());
+  const currentGraveX = gravePoint.x - currentCenter.x + mapW / 2;
+  const shiftX = currentGraveX - graveTargetX;
+  const newCenter = map.unproject([currentCenter.x + shiftX, currentCenter.y], map.getZoom());
+  map.panTo(newCenter, {animate:true, duration:0.7});
+
+  // Highlight sidebar
+  document.querySelectorAll('.vet-item').forEach(el => el.classList.remove('active'));
+  const si = document.querySelector(`.vet-item[data-i="${idx}"]`);
+  if (si) { si.classList.add('active'); si.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+  activeIdx = idx;
+  document.getElementById('popup').classList.add('show');
+}
+
+function closePopup() {
+  document.getElementById('popup').classList.remove('show');
+  if (activeMarker) {
+    activeMarker.getElement()?.classList.remove('marker-pulse');
+    activeMarker = null;
+  }
+  if (activeLabel) { map.removeLayer(activeLabel); activeLabel = null; }
+  // Clear sidebar active state so pulse and glow stop
+  document.querySelectorAll('.vet-item').forEach(el => el.classList.remove('active'));
+  activeIdx = null;
+}
+document.getElementById('popup').addEventListener('click', e => {
+  if (e.target === document.getElementById('popup')) closePopup();
+});
+// Also close on map click when popup is open
+map.on('click', () => {
+  if (document.getElementById('popup').classList.contains('show')) closePopup();
+});
+
+// Sidebar
+function buildSidebar() {
+  const list = document.getElementById('vet-list');
+  const none = document.getElementById('no-results');
+  list.innerHTML = '';
+  const term = searchTerm.toLowerCase();
+  let shown = 0;
+  const sorted = [...veterans].map((v,i)=>({...v,_i:i})).sort((a,b)=>{ const suf=/^(Sr|Jr|II|III|IV|MD)\.?$/i; const wa=a.name.split(' '), wb=b.name.split(' '); const la=suf.test(wa[wa.length-1])?wa[wa.length-2]||wa[0]:wa[wa.length-1]; const lb=suf.test(wb[wb.length-1])?wb[wb.length-2]||wb[0]:wb[wb.length-1]; return la.localeCompare(lb)||a.name.localeCompare(b.name); });
+  sorted.forEach((v) => { const idx = v._i;
+    if (!activeEras.has(normEra(v.era))) return;
+    if (term && !v.name.toLowerCase().includes(term) && !(v.branch||'').toLowerCase().includes(term)) return;
+    shown++;
+    const el = document.createElement('div');
+    el.className = 'vet-item' + (idx===activeIdx?' active':'');
+    el.dataset.i = idx;
+    el.innerHTML = `<div class="v-sym" style="color:${eraColor(v.era)}">${branchSym(v.branch)}</div><div style="flex:1;min-width:0"><div class="v-name">${(()=>{const p=v.name.trim().split(/\s+/);const suf=/^(Sr|Jr|II|III|IV|MD)\.?$/i;if(p.length>2&&suf.test(p[p.length-1])){return p[p.length-2]+', '+p.slice(0,-2).join(' ')+' '+p[p.length-1];}return p.length>1?p[p.length-1]+', '+p.slice(0,-1).join(' '):v.name;})()}</div><div class="v-era">${normEra(v.era)}</div></div>`;
+    el.addEventListener('click', () => {
+      map.flyTo([v.lat, v.lng], 19, {duration:1.0});
+      setTimeout(() => openPopup(v, idx), 350);
+    });
+    list.appendChild(el);
+  });
+  none.style.display = shown===0 ? 'block' : 'none';
+}
+
+function updateCount() {
+  const showing = veterans.filter(v => activeEras.has(normEra(v.era))).length;
+  const total = veterans.length;
+  if (showing === total) {
+    document.getElementById('vet-count').textContent = `${total} Documented Veterans`;
+  } else {
+    document.getElementById('vet-count').textContent = `${showing} of ${total} Veterans`;
+  }
+}
+document.getElementById('vet-count').textContent = `${veterans.length} Documented Veterans`;
+
+// Era counts
+const eraCounts = {};
+veterans.forEach(v => {
+  const e = normEra(v.era);
+  eraCounts[e] = (eraCounts[e]||0)+1;
+});
+
+// Filter buttons
+const filterDiv = document.getElementById('era-filters');
+ERA_ORDER.forEach(era => {
+  if (!eraCounts[era]) return;
+  const color = ERA_COLORS[era];
+  const short = era.replace(' Era','').replace('World War ','WW').replace('Korean War','Korea').replace('Spanish-American War','Span-Am');
+  const btn = document.createElement('button');
+  btn.className='era-btn on'; btn.style.background=color;
+  btn.dataset.era=era; btn.textContent=short;
+  btn.addEventListener('click', () => {
+    // Toggle this era on/off independently
+    if (btn.classList.contains('selected')) {
+      btn.classList.remove('selected');
+      activeEras.delete(era);
+      // If none left, reset all on
+      if (activeEras.size === 0) {
+        ERA_ORDER.forEach(e => activeEras.add(e));
+        document.querySelectorAll('.era-btn').forEach(b => b.classList.remove('selected'));
+      }
+    } else {
+      // First click when nothing selected — start fresh with just this one
+      const anySelected = document.querySelector('.era-btn.selected');
+      if (!anySelected) {
+        activeEras = new Set([era]);
+      } else {
+        activeEras.add(era);
+      }
+      btn.classList.add('selected');
+    }
+    // Sync legend
+    ERA_ORDER.forEach(e => {
+      const row = document.querySelector(`.leg-row[data-era="${e}"]`);
+      if (row) {
+        if (activeEras.size < ERA_ORDER.length && !activeEras.has(e)) {
+          row.classList.add('dimmed');
+        } else {
+          row.classList.remove('dimmed');
+        }
+      }
+    });
+    buildMarkers(); buildSidebar(); updateCount();
+  });
+  filterDiv.appendChild(btn);
+});
+
+// Legend
+const legRows = document.getElementById('leg-rows');
+ERA_ORDER.forEach(era => {
+  if (!eraCounts[era]) return;
+  const row = document.createElement('div');
+  row.className='leg-row'; row.dataset.era=era;
+  row.innerHTML=`<div class="leg-sym" style="color:${ERA_COLORS[era]}">●</div><div class="leg-label">${era.replace(' Era','')}</div><div class="leg-count">${eraCounts[era]}</div>`;
+  row.addEventListener('click', () => {
+    document.querySelector(`.era-btn[data-era="${era}"]`)?.click();
+  });
+  legRows.appendChild(row);
+});
+
+// Search
+document.getElementById('search').addEventListener('keydown', e => {
+  if (e.key==='Enter') {
+    const term = e.target.value.toLowerCase();
+    const match = veterans.find(v => v.name.toLowerCase().includes(term));
+    if (match) {
+      const idx = veterans.indexOf(match);
+      map.flyTo([match.lat, match.lng], 19, {duration:1.0});
+      setTimeout(() => openPopup(match, idx), 350);
+    }
+  }
+});
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value;
+  buildSidebar();
+});
+
+buildMarkers();
+buildSidebar();
+</script>
+</body>
+</html>
