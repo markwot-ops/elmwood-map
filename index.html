@@ -59,7 +59,7 @@ body { font-family:Georgia,serif; background:#1a1a1a; color:#f0e8d8; height:100v
   opacity:1.0;
 }
 .era-btn.off { opacity:1.0; border-color:transparent; }
-.era-btn.on { border-color:rgba(255,255,255,0.6); opacity:0.6; }
+.era-btn.on { border-color:rgba(255,255,255,0.6); opacity:1.0; }
 .era-btn.selected { opacity:1; border-color:rgba(255,255,255,0.9); filter:brightness(1.3); }
 
 #vet-list { overflow-y:auto; flex:1; padding:3px 0; }
@@ -274,7 +274,7 @@ const veterans = [
     "id": "elisha_chapin_colonial",
     "name": "Elisha Chapin",
     "branch": "Army",
-    "era": "Colonial War",
+    "era": "French & Indian War",
     "lat": 42.187378,
     "lng": -72.629561,
     "photo": "E Chapin.jpg",
@@ -478,7 +478,7 @@ const veterans = [
   "id": "capt_joseph_morgan_colonial",
   "name": "Joseph Morgan",
   "branch": "Army",
-  "era": "Colonial War",
+  "era": "French & Indian War",
   "lat": 42.187164,
   "lng": -72.629706,
   "photo": "Morgan.jpg",
@@ -637,7 +637,7 @@ const veterans = [
 }];
 
 const ERA_COLORS = {
-  'Colonial War':'#6B2D8B',
+  'French & Indian War':'#6B2D8B',
   'Revolutionary War':'#1B4F8A',
   'Civil War':'#8B4513',
   'Civil War Era':'#8B4513',
@@ -648,7 +648,7 @@ const ERA_COLORS = {
   'Vietnam':'#DC143C',
   'Unknown Era':'#666',
 };
-const ERA_ORDER = ['Colonial War','Revolutionary War','Civil War','Civil War Era','Spanish-American War','World War I','World War II','Korean War','Vietnam','Unknown Era'];
+const ERA_ORDER = ['French & Indian War','Revolutionary War','Civil War','Civil War Era','Spanish-American War','World War I','World War II','Korean War','Vietnam','Unknown Era'];
 
 function normEra(raw) {
   if (!raw) return 'Unknown Era';
