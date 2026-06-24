@@ -745,8 +745,10 @@ function openPopup(v, idx) {
   photo.src = '';
   photo.style.display = 'none';
   if (v.photo) {
-    photo.src = v.photo;
-    photo.style.display = 'block';
+    const newSrc = v.photo;
+    const tmp = new Image();
+    tmp.onload = () => { photo.src = newSrc; photo.style.display = 'block'; };
+    tmp.src = newSrc;
   }
   // Extra photos (newspaper clippings, documents, etc.)
   let extEl = document.getElementById('pextra');
