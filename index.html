@@ -58,8 +58,8 @@ body { font-family:Georgia,serif; background:#1a1a1a; color:#f0e8d8; height:100v
   transition:opacity 0.2s, border-color 0.15s;
   opacity:1.0;
 }
-.era-btn.off { opacity:1.0; border-color:transparent; }
-.era-btn.on { border-color:rgba(255,255,255,0.6); opacity:1.0; }
+.era-btn.off { opacity:0.45; border-color:transparent; filter:brightness(0.7); }
+.era-btn.on { border-color:rgba(255,255,255,0.75); opacity:1.0; filter:brightness(1.15); }
 .era-btn.selected { opacity:1; border-color:rgba(255,255,255,0.9); filter:brightness(1.3); }
 
 #vet-list { overflow-y:auto; flex:1; padding:3px 0; }
@@ -648,7 +648,7 @@ const ERA_COLORS = {
   'Vietnam':'#DC143C',
   'Unknown Era':'#666',
 };
-const ERA_ORDER = ['French & Indian War','Revolutionary War','Civil War','Civil War Era','Spanish-American War','World War I','World War II','Korean War','Vietnam','Unknown Era'];
+const ERA_ORDER = ['French & Indian War','Revolutionary War','Civil War','Spanish-American War','World War I','World War II','Korean War','Vietnam','Unknown Era'];
 
 function normEra(raw) {
   if (!raw) return 'Unknown Era';
@@ -889,23 +889,21 @@ ERA_ORDER.forEach(era => {
     if (!anySelected) {
       // All-on state: first click isolates this era
       activeEras = new Set([era]);
-      document.querySelectorAll('.era-btn').forEach(b => b.classList.add('selected'));
-      document.querySelectorAll('.era-btn').forEach(b => {
-        if (b.dataset.era !== era) b.classList.remove('selected');
-      });
+      document.querySelectorAll('.era-btn').forEach(b => { b.classList.remove('selected'); b.classList.remove('on'); b.classList.add('off'); });
+      btn.classList.remove('off'); btn.classList.add('selected');
     } else if (btn.classList.contains('selected')) {
       // Deselect this era
-      btn.classList.remove('selected');
+      btn.classList.remove('selected'); btn.classList.add('off');
       activeEras.delete(era);
       // If none left, reset all on
       if (activeEras.size === 0) {
         ERA_ORDER.forEach(e => activeEras.add(e));
-        document.querySelectorAll('.era-btn').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('.era-btn').forEach(b => { b.classList.remove('selected'); b.classList.add('on'); });
       }
     } else {
       // Add this era to active set
       activeEras.add(era);
-      btn.classList.add('selected');
+      btn.classList.remove('off'); btn.classList.add('selected');
     }
     // Sync legend
     ERA_ORDER.forEach(e => {
