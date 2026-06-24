@@ -28,11 +28,11 @@ body { font-family:Georgia,serif; background:#1a1a1a; color:#f0e8d8; height:100v
   background:rgba(8,8,8,0.9); border:1px solid #3a3a3a;
   border-radius:4px; padding:16px 20px; z-index:800; min-width:248px;
 }
-#legend h4 { font-size:0.9rem; text-transform:uppercase; letter-spacing:0.12em; color:#888; margin-bottom:10px; }
-.leg-row { display:flex; align-items:center; gap:10px; margin-bottom:7px; cursor:pointer; transition:opacity 0.15s; }
+#legend h4 { font-size:0.52rem; text-transform:uppercase; letter-spacing:0.12em; color:#888; margin-bottom:6px; }
+.leg-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; cursor:pointer; transition:opacity 0.15s; }
 .leg-row:hover { opacity:0.75; }
-.leg-sym { width:20px; text-align:center; font-size:1rem; }
-.leg-label { font-size:0.9rem; color:#ccc; flex:1; }
+.leg-sym { width:13px; text-align:center; font-size:0.66rem; }
+.leg-label { font-size:0.58rem; color:#ccc; flex:1; }
 .leg-count { font-size:0.54rem; color:#ccc; }
 .leg-row.dimmed { opacity:0.28; }
 
@@ -238,7 +238,7 @@ const veterans = [
     "lat": 42.187144,
     "lng": -72.629197,
     "photo": "Day.jpg",
-    "bio": "Edward Day died on October 25, 1777, at the age of 19, while in service to the American cause during the Revolutionary War. He was the fourth of eleven children born to Joel and Eunice Day of Holyoke, a family that gave more than most to the struggle for independence: Joel Day and five of his sons served, and two of those sons did not come home. Edward died at Troy, New York, wounded in a skirmish and taken by illness within days. His younger brother Robert had died two months earlier, on August 27, 1777, ambushed while carrying supplies to American forces near Ticonderoga. Both brothers are commemorated on the Joel Day family stone at Elmwood Cemetery, one of the most significant Revolutionary War memorials in the Pioneer Valley. Eunice Day, their mother, is honored by a Daughters of the American Revolution tablet for her family’s sacrifice. The DAR chapter in Holyoke named itself the Eunice Day Chapter in her memory, chartered in February 1923. The stone at Elmwood stands as a record of what this city gave, at the very beginning of the American republic, in the persons of two sons who did not return. If you have further information about this veteran, please contact the City of Holyoke Veterans Graves Officer at (413) 322-5630 at 310 Appleton Street, 1st Floor, Holyoke, MA 01040."
+    "bio": "Edward Day died on October 25, 1777, at the age of 19, during the Revolutionary War. He was the fourth of eleven children born to Joel and Eunice Day of Holyoke, a family that gave more than most to the struggle for independence: Joel Day and five of his sons served, and two of those sons did not come home. Edward died at Troy, New York, wounded in a skirmish and taken by illness within days. His younger brother Robert had died two months earlier, ambushed while carrying supplies to American forces near Ticonderoga. Both brothers are commemorated on the Joel Day family stone at Elmwood Cemetery, one of the most significant Revolutionary War memorials in the Pioneer Valley. Eunice Day, their mother, is honored by a Daughters of the American Revolution tablet for her family’s sacrifice. The DAR chapter in Holyoke named itself the Eunice Day Chapter in her memory. The stone at Elmwood stands as a record of what this city gave, at the very beginning of the American republic, in the persons of two sons who did not return. If you have further information about this veteran, please contact the City of Holyoke Veterans Graves Officer at (413) 322-5630 at 310 Appleton Street, 1st Floor, Holyoke, MA 01040."
   },
   {
     "id": "robert_day_rev",
@@ -279,7 +279,7 @@ const veterans = [
     "lng": -72.629561,
     "photo": "E Chapin.jpg",
     "flags": ["KIA"],
-    "bio": "Captain Elisha Chapin, born July 16, 1707, was a provincial militia officer who commanded Fort Massachusetts — the westernmost fortification in the line of forts defending British colonial Massachusetts — from 1752 to 1754. Fort Massachusetts stood on the Hoosac River frontier of Berkshire County, the last organized defense against French and Indian forces moving south from Canada. Chapin served on the most exposed edge of the British colonial world, in a region where raids, ambushes, and sudden death were facts of daily life. On July 11, 1756, while searching for strayed cattle near Hemlock Brook at West Hoosac — the settlement that would become Williamstown — Chapin was killed by a party of Native warriors along with Sergeant William Chidester and Chidester’s son. He was 49 years old. The attack occurred as the French and Indian War, the North American theater of the Seven Years’ War, was escalating across the western Massachusetts frontier. Chapin is buried at Elmwood Cemetery in Holyoke, and his marker is among the oldest military gravestones in the region. If you have further information about this veteran, please contact the City of Holyoke Veterans Graves Officer at (413) 322-5630 at 310 Appleton Street, 1st Floor, Holyoke, MA 01040."
+    "bio": "Captain Elisha Chapin, born July 16, 1707, was a provincial militia officer who commanded Fort Massachusetts — the westernmost fortification in the line of forts defending British colonial Massachusetts — from 1752 to 1754. Fort Massachusetts stood on the Hoosac River frontier of Berkshire County, the last organized defense against French and Indian forces moving south from Canada. Chapin served on the most exposed edge of the British colonial world, in a region where raids, ambushes, and sudden death were facts of daily life. On July 11, 1756, while searching for strayed cattle near Hemlock Brook at West Hoosac — the settlement that would become Williamstown — Chapin was killed by a party of Native warriors. The attack occurred as the French and Indian War was escalating across the Western Massachusetts frontier. Chapin’s marker is among the oldest military gravestones in the region. If you have further information about this veteran, please contact the City of Holyoke Veterans Graves Officer at (413) 322-5630 at 310 Appleton Street, 1st Floor, Holyoke, MA 01040."
   },
   {
     "id": "jno_eveleth_cw",
@@ -443,7 +443,7 @@ const veterans = [
   "flags": [
     "Purple Heart"
   ],
-  "bio": "Robert Alfred Krause served as a Sergeant in the United States Army during World War II and was awarded the Purple Heart for wounds received in combat. The Purple Heart, authorized by George Washington in 1782 and reestablished in 1932, is awarded to members of the armed forces wounded or killed in action against an enemy of the United States. Receiving it as a Sergeant indicates Krause served in a leadership role at the squad or section level, typically responsible for a small group of men under fire. Krause was born February 11, 1918 and died November 1, 1991. If you have further information about this veteran, please contact the City of Holyoke Veterans Graves Officer at (413) 322-5630 at 310 Appleton Street, 1st Floor, Holyoke, MA 01040."
+  "bio": "Robert Alfred Krause served as a Sergeant in the United States Army during World War II and was awarded the Purple Heart for wounds received in combat. The Purple Heart, authorized by George Washington in 1782, is awarded to members of the armed forces wounded or killed in action against an enemy of the United States. Receiving it as a Sergeant indicates Krause served in a leadership role at the squad or section level, typically responsible for a small group of men under fire. Krause was born February 11, 1918 and died November 1, 1991. If you have further information about this veteran, please contact the City of Holyoke Veterans Graves Officer at (413) 322-5630 at 310 Appleton Street, 1st Floor, Holyoke, MA 01040."
 },
 {
   "id": "lt_martin_chapin_rev",
