@@ -217,7 +217,7 @@ const veterans = [
     "era": "Civil War",
     "lat": 42.187439,
     "lng": -72.629928,
-    "photo": "Carpenter?.jpg",
+    "photo": "Carpenter_.jpg",
     "bio": "L.O. Carpenter served as a First Lieutenant and Assistant Surgeon with the 57th Massachusetts Volunteer Infantry during the Civil War. Military surgeons operated under fire, performing amputations and field medicine that saved countless lives under conditions of extreme hardship. The 57th Massachusetts was organized in 1864 and saw heavy combat in the Overland Campaign under General Grant. A Grand Army of the Republic marker stands at his grave, recognizing his Union service. If you have further information about this veteran, please contact the City of Holyoke Veterans Graves Officer at (413) 322-5630 at 310 Appleton Street, 1st Floor, Holyoke, MA 01040."
   },
   {
@@ -278,6 +278,7 @@ const veterans = [
     "lat": 42.187378,
     "lng": -72.629561,
     "photo": "E Chapin.jpg",
+    "flags": ["KIA"],
     "bio": "Captain Elisha Chapin, born July 16, 1707, was a provincial militia officer who commanded Fort Massachusetts — the westernmost fortification in the line of forts defending British colonial Massachusetts — from 1752 to 1754. Fort Massachusetts stood on the Hoosac River frontier of Berkshire County, the last organized defense against French and Indian forces moving south from Canada. Chapin served on the most exposed edge of the British colonial world, in a region where raids, ambushes, and sudden death were facts of daily life. On July 11, 1756, while searching for strayed cattle near Hemlock Brook at West Hoosac — the settlement that would become Williamstown — Chapin was killed by a party of Native warriors along with Sergeant William Chidester and Chidester’s son. He was 49 years old. The attack occurred as the French and Indian War, the North American theater of the Seven Years’ War, was escalating across the western Massachusetts frontier. Chapin is buried at Elmwood Cemetery in Holyoke, and his marker is among the oldest military gravestones in the region. If you have further information about this veteran, please contact the City of Holyoke Veterans Graves Officer at (413) 322-5630 at 310 Appleton Street, 1st Floor, Holyoke, MA 01040."
   },
   {
@@ -439,7 +440,7 @@ const veterans = [
   "lat": 42.187417,
   "lng": -72.629311,
   "photo": "krause.jpg",
-  "awards": [
+  "flags": [
     "Purple Heart"
   ],
   "bio": "Robert Alfred Krause served as a Sergeant in the United States Army during World War II and was awarded the Purple Heart for wounds received in combat. Krause was born February 11, 1918 and died November 1, 1991. If you have further information about this veteran, please contact the City of Holyoke Veterans Graves Officer at (413) 322-5630 at 310 Appleton Street, 1st Floor, Holyoke, MA 01040."
@@ -742,16 +743,18 @@ function openPopup(v, idx) {
   document.getElementById('pstory').textContent = v.bio || 'Service details being researched.';
   const photo = document.getElementById('pphoto');
   if (v.photo) {
-    photo.src = v.photo;
-    photo.style.display = 'block';
+    photo.style.display = 'none';
     photo.style.opacity = '0';
     photo.style.transition = 'none';
     photo.onload = () => {
-      photo.style.transition = 'opacity 0.3s ease';
+      photo.style.display = 'block';
+      photo.style.transition = 'opacity 0.25s ease';
       photo.style.opacity = '1';
     };
-    // If already cached, onload may not fire
+    photo.src = v.photo;
+    // If already cached, onload won't fire
     if (photo.complete && photo.naturalWidth) {
+      photo.style.display = 'block';
       photo.style.opacity = '1';
     }
   } else {
