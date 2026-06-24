@@ -741,10 +741,11 @@ function openPopup(v, idx) {
   const photo = document.getElementById('pphoto');
   if (v.photo) {
     photo.style.opacity = '0';
-    photo.style.display = 'block';
+    photo.style.display = 'none';
     const img = new Image();
     img.onload = () => {
       photo.src = img.src;
+      photo.style.display = 'block';
       photo.style.transition = 'opacity 0.25s ease';
       photo.style.opacity = '1';
     };
@@ -884,8 +885,16 @@ ERA_ORDER.forEach(era => {
   btn.className='era-btn on'; btn.style.background=color;
   btn.dataset.era=era; btn.textContent=short;
   btn.addEventListener('click', () => {
-    // Toggle this era on/off independently
-    if (btn.classList.contains('selected')) {
+    const anySelected = document.querySelector('.era-btn.selected');
+    if (!anySelected) {
+      // All-on state: first click isolates this era
+      activeEras = new Set([era]);
+      document.querySelectorAll('.era-btn').forEach(b => b.classList.add('selected'));
+      document.querySelectorAll('.era-btn').forEach(b => {
+        if (b.dataset.era !== era) b.classList.remove('selected');
+      });
+    } else if (btn.classList.contains('selected')) {
+      // Deselect this era
       btn.classList.remove('selected');
       activeEras.delete(era);
       // If none left, reset all on
@@ -894,13 +903,8 @@ ERA_ORDER.forEach(era => {
         document.querySelectorAll('.era-btn').forEach(b => b.classList.remove('selected'));
       }
     } else {
-      // First click when nothing selected — start fresh with just this one
-      const anySelected = document.querySelector('.era-btn.selected');
-      if (!anySelected) {
-        activeEras = new Set([era]);
-      } else {
-        activeEras.add(era);
-      }
+      // Add this era to active set
+      activeEras.add(era);
       btn.classList.add('selected');
     }
     // Sync legend
