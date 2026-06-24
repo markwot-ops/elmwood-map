@@ -742,11 +742,11 @@ function openPopup(v, idx) {
   document.getElementById('pservice').textContent = [v.branch, v.era].filter(Boolean).join(' • ');
   document.getElementById('pstory').textContent = v.bio || 'Service details being researched.';
   const photo = document.getElementById('pphoto');
+  photo.src = '';
+  photo.style.display = 'none';
   if (v.photo) {
     photo.src = v.photo;
     photo.style.display = 'block';
-  } else {
-    photo.style.display = 'none';
   }
   // Extra photos (newspaper clippings, documents, etc.)
   let extEl = document.getElementById('pextra');
