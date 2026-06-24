@@ -26,13 +26,13 @@ body { font-family:Georgia,serif; background:#1a1a1a; color:#f0e8d8; height:100v
 #legend {
   position:absolute; bottom:14px; left:8px;
   background:rgba(8,8,8,0.9); border:1px solid #3a3a3a;
-  border-radius:4px; padding:8px 10px; z-index:800; min-width:124px;
+  border-radius:4px; padding:16px 20px; z-index:800; min-width:248px;
 }
-#legend h4 { font-size:0.52rem; text-transform:uppercase; letter-spacing:0.12em; color:#888; margin-bottom:6px; }
-.leg-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; cursor:pointer; transition:opacity 0.15s; }
+#legend h4 { font-size:0.9rem; text-transform:uppercase; letter-spacing:0.12em; color:#888; margin-bottom:10px; }
+.leg-row { display:flex; align-items:center; gap:10px; margin-bottom:7px; cursor:pointer; transition:opacity 0.15s; }
 .leg-row:hover { opacity:0.75; }
-.leg-sym { width:13px; text-align:center; font-size:0.66rem; }
-.leg-label { font-size:0.58rem; color:#ccc; flex:1; }
+.leg-sym { width:20px; text-align:center; font-size:1rem; }
+.leg-label { font-size:0.9rem; color:#ccc; flex:1; }
 .leg-count { font-size:0.54rem; color:#ccc; }
 .leg-row.dimmed { opacity:0.28; }
 
@@ -53,12 +53,12 @@ body { font-family:Georgia,serif; background:#1a1a1a; color:#f0e8d8; height:100v
 #era-filters { display:flex; flex-wrap:wrap; gap:3px; }
 .era-btn {
   padding:2px 6px; border-radius:2px; border:2px solid transparent;
-  font-size:0.5rem; cursor:pointer; font-family:Georgia,serif;
+  font-size:0.8rem; cursor:pointer; font-family:Georgia,serif;
   color:white; text-shadow:0 1px 2px rgba(0,0,0,0.6);
   transition:opacity 0.2s, border-color 0.15s;
-  opacity:0.8;
+  opacity:1.0;
 }
-.era-btn.off { opacity:0.8; border-color:transparent; }
+.era-btn.off { opacity:1.0; border-color:transparent; }
 .era-btn.on { border-color:rgba(255,255,255,0.6); opacity:0.6; }
 .era-btn.selected { opacity:1; border-color:rgba(255,255,255,0.9); filter:brightness(1.3); }
 
