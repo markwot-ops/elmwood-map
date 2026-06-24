@@ -653,7 +653,9 @@ const ERA_ORDER = ['French & Indian War','Revolutionary War','Civil War','Spanis
 function normEra(raw) {
   if (!raw) return 'Unknown Era';
   const s = raw.trim();
-  if (s.includes('Civil')) return 'Civil War Era';
+  if (s.includes('French')) return 'French & Indian War';
+  if (s.includes('Revolutionary')) return 'Revolutionary War';
+  if (s.includes('Civil')) return 'Civil War';
   if (s.includes('Spanish')) return 'Spanish-American War';
   if (s.includes('Vietnam')) return 'Vietnam';
   if (s.includes('World War II')) return 'World War II';
@@ -737,19 +739,21 @@ function openPopup(v, idx) {
   }
   document.getElementById('pname').textContent = v.name;
   document.getElementById('pservice').textContent = [v.branch, v.era].filter(Boolean).join(' • ');
-  document.getElementById('pstory').textContent = v.story || 'Service details being researched.';
+  document.getElementById('pstory').textContent = v.bio || 'Service details being researched.';
   const photo = document.getElementById('pphoto');
   if (v.photo) {
+    photo.src = v.photo;
+    photo.style.display = 'block';
     photo.style.opacity = '0';
-    photo.style.display = 'none';
-    const img = new Image();
-    img.onload = () => {
-      photo.src = img.src;
-      photo.style.display = 'block';
-      photo.style.transition = 'opacity 0.25s ease';
+    photo.style.transition = 'none';
+    photo.onload = () => {
+      photo.style.transition = 'opacity 0.3s ease';
       photo.style.opacity = '1';
     };
-    img.src = v.photo;
+    // If already cached, onload may not fire
+    if (photo.complete && photo.naturalWidth) {
+      photo.style.opacity = '1';
+    }
   } else {
     photo.style.display = 'none';
     photo.style.opacity = '0';
