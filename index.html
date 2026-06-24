@@ -747,7 +747,11 @@ function openPopup(v, idx) {
   if (v.photo) {
     const newSrc = v.photo;
     const tmp = new Image();
-    tmp.onload = () => { photo.src = newSrc; photo.style.display = 'block'; };
+    tmp.onload = () => {
+      photo.src = newSrc;
+      photo.style.display = 'block';
+      document.getElementById('popup').classList.add('show');
+    };
     tmp.src = newSrc;
   }
   // Extra photos (newspaper clippings, documents, etc.)
@@ -806,7 +810,7 @@ function openPopup(v, idx) {
   const si = document.querySelector(`.vet-item[data-i="${idx}"]`);
   if (si) { si.classList.add('active'); si.scrollIntoView({block:'nearest',behavior:'smooth'}); }
   activeIdx = idx;
-  document.getElementById('popup').classList.add('show');
+  if (!v.photo) document.getElementById('popup').classList.add('show');
 }
 
 function closePopup() {
